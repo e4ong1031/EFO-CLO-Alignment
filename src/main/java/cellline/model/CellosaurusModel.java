@@ -23,6 +23,7 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import cellline.object.CLOCellLine;
 import cellline.object.CellosaurusCellLine;
 import cellline.object.CrossReference;
 import cellline.object.Disease;
@@ -36,6 +37,12 @@ public class CellosaurusModel {
 	static final Logger logger = LoggerFactory.getLogger( CellosaurusModel.class );
 
 	private HashMap<String, CellosaurusCellLine> cellLines = new HashMap<String, CellosaurusCellLine>();
+	/**
+	 * @return the cellLines
+	 */
+	public HashMap<String, CellosaurusCellLine> getCellLines() {
+		return cellLines;
+	}
 	
 	public CellosaurusModel() {}
 	

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -124,6 +125,29 @@ public class EFOCellosaurusCLOMapping {
 		
 		// Load DOID
 		DiseaseOntologyModel doidModel = new DiseaseOntologyModel();
+		
+		// Expand disease cross reference from DOID and EFO
+		for ( Map.Entry<String, EFOCellLine> efo : efoModel.getCellLines().entrySet() )
+			for ( Disease efoDisease : efo.getValue().getDiseases() ) {
+				for ( Disease sourceDOID : doidModel.getDiseasesFromCrossReferenceAccession( efoDisease.getAccession() ) )
+					efoDisease.merge( sourceDOID );
+				for ( Disease sourceEFO : efoModel.getDiseasesFromCrossReferenceAccession( efoDisease.getAccession() ) )
+					efoDisease.merge( sourceEFO );
+			}
+		for ( Map.Entry<String, CLOCellLine> clo : cloModel.getCellLines().entrySet() )
+			for ( Disease cloDisease : clo.getValue().getDiseases() ) {
+				for ( Disease targetDOID : doidModel.getDiseasesFromCrossReferenceAccession( cloDisease.getAccession() ) )
+					cloDisease.merge( targetDOID );
+				for ( Disease targetEFO : efoModel.getDiseasesFromCrossReferenceAccession( cloDisease.getAccession() ) )
+					cloDisease.merge( targetEFO );
+			}
+		for ( Map.Entry<String, CellosaurusCellLine> cls : clsModel.getCellLines().entrySet() )
+			for ( Disease clsDisease : cls.getValue().getDiseases() ) {
+				for ( Disease intermediateDOID : doidModel.getDiseasesFromCrossReferenceAccession( clsDisease.getAccession() ) )
+					clsDisease.merge( intermediateDOID );
+				for ( Disease intermediateEFO : efoModel.getDiseasesFromCrossReferenceAccession( clsDisease.getAccession() ) )
+					clsDisease.merge( intermediateEFO );
+			}
 		
 		CellLineMatcher cellLineMatcher = new CellLineMatcher();
 		DiseaseMatcher diseaseMatcher = new DiseaseMatcher( doidModel, efoModel );
@@ -361,7 +385,7 @@ public class EFOCellosaurusCLOMapping {
 				} else if ( mappingFlag[4] ) {
 					finalDecision[2] = true;
 				}
-				/*
+				
 				if ( !finalDecision[0] ) {
 					if ( ( mappingFlag[2] != null && mappingFlag[2] ) 
 							|| ( mappingFlag[4] != null && mappingFlag[4] ) ) {
@@ -371,7 +395,7 @@ public class EFOCellosaurusCLOMapping {
 							finalDecision[0] = true;
 					}
 				}
-				*/
+				
 
 				String[] output = new String[entry.size()];
 				if ( finalDecision[0] && finalDecision[1] && finalDecision[2] ) {

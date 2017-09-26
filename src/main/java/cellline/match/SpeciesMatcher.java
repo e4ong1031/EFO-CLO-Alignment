@@ -97,7 +97,7 @@ public class SpeciesMatcher {
 	public Boolean match() {
 		if ( this.matchContent() ) return true;
 			
-		//if ( this.isParent( source, target ) || this.isParent( target, source ) ) flag = true;
+		//if ( this.isParent( source, target ) || this.isParent( target, source ) ) return true;
 		return false;
 	}
 	
